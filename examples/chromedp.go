@@ -30,6 +30,11 @@ func main() {
 		chromedp.Nodes(".product", &nodes, chromedp.ByQueryAll),
 	)
 
+	for i := 0; i < len(nodes); i++ {
+		fmt.Println(nodes[i])
+	}
+	fmt.Println(len(nodes))
+
 	// scraping data from each node
 	var url, image, name, price string
 	for _, node := range nodes {
@@ -57,48 +62,48 @@ func main() {
 	// export logic
 }
 
-// -------------------------------------------------------
-// Example to scrape and traverse links
-// Reference: https://devmarkpro.com/chromedp-working-with-nodes-and-tabs
-package main
+// // -------------------------------------------------------
+// // Example to scrape and traverse links
+// // Reference: https://devmarkpro.com/chromedp-working-with-nodes-and-tabs
+// package main
 
-import (
-    "context"
-    "fmt"
-    "log"
+// import (
+//     "context"
+//     "fmt"
+//     "log"
 
-    "github.com/chromedp/cdproto/cdp"
-    "github.com/chromedp/chromedp"
-)
+//     "github.com/chromedp/cdproto/cdp"
+//     "github.com/chromedp/chromedp"
+// )
 
-func main() {
-    ctx, cancel := chromedp.NewContext(context.Background(), chromedp.WithErrorf(log.Printf))
-    defer cancel()
-    var nodes []*cdp.Node
-    selector := "#main ul li a"
-    pageURL := "https://notepad-plus-plus.org/downloads/"
-    if err := chromedp.Run(ctx, chromedp.Tasks{
-        chromedp.Navigate(pageURL),
-        chromedp.WaitReady(selector),
-        chromedp.Nodes(selector, &nodes),
-    }); err != nil {
-        panic(err)
-    }
-    f := func(ctx context.Context, url string) {
-        clone, cancel := chromedp.NewContext(ctx)
-        defer cancel()
-        fmt.Printf("%s is opening in a new tab\n", url)
+// func main() {
+//     ctx, cancel := chromedp.NewContext(context.Background(), chromedp.WithErrorf(log.Printf))
+//     defer cancel()
+//     var nodes []*cdp.Node
+//     selector := "#main ul li a"
+//     pageURL := "https://notepad-plus-plus.org/downloads/"
+//     if err := chromedp.Run(ctx, chromedp.Tasks{
+//         chromedp.Navigate(pageURL),
+//         chromedp.WaitReady(selector),
+//         chromedp.Nodes(selector, &nodes),
+//     }); err != nil {
+//         panic(err)
+//     }
+//     f := func(ctx context.Context, url string) {
+//         clone, cancel := chromedp.NewContext(ctx)
+//         defer cancel()
+//         fmt.Printf("%s is opening in a new tab\n", url)
 
-        if err := chromedp.Run(clone, chromedp.Navigate(url)); err != nil {
-            // do something nice with you errors!
-            panic(err)
-        }
-    }
-    for _, n := range nodes {
-        u := n.AttributeValue("href")
-        go f(ctx, u)
-    }
-}
+//         if err := chromedp.Run(clone, chromedp.Navigate(url)); err != nil {
+//             // do something nice with you errors!
+//             panic(err)
+//         }
+//     }
+//     for _, n := range nodes {
+//         u := n.AttributeValue("href")
+//         go f(ctx, u)
+//     }
+// }
 
 // -------------------------------------------------------
 
